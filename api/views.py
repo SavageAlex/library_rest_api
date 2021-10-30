@@ -1,5 +1,5 @@
 from django.http.response import JsonResponse
-import requests as req
+import requests
 from requests.exceptions import HTTPError
 from rest_framework import viewsets, generics, status
 from rest_framework.views import APIView
@@ -10,41 +10,30 @@ from django_filters.rest_framework import DjangoFilterBackend
 import io
 
 from .serializers import BookSerializer
-from .models import Book
+from .models import Book, Author
 
 class BookViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all().order_by('title')
     serializer_class = BookSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('title', 'authors', 'published_date', 'categories', 'avaerage_rating', 'ratings_count',)
+    filter_fields = ('title', 'authors', 'published_date', 'categories', 'average_rating', 'ratings_count',)
     
-    # def get_queryset(self):
-    #     queryset = Book.objects.all()
-    #     published_date = self.request.query_params.get('published_date')
-    #     sort = self.request.query_params.get('sort')
-    #     author = self.request.query_params.get('author')
-    #     if published_date:
-    #         queryset = queryset.filter(published_date=published_date)
-    #     elif author:
-    #         print(author)
-    #         queryset = queryset.filter(author=author)
-    #     elif sort:
-    #         queryset = queryset.order_by(sort)
-    #     return queryset
+    def get_queryset(self):
+        queryset = Book.objects.all()
+        print(self.request.query_params)
+        sort = self.request.query_params.get('sort')
+        author = self.request.query_params.getlist('author')
+        print(author)
+        if sort:
+            queryset = queryset.order_by(sort)
+        elif author:
+            queryset = queryset.filter(authors__in=author).distinct()
+        return queryset
 
-# class BookView(generics.ListAPIView):
-#     model = Book
-#     serializer_class = BookSerializer
-
-#     def get_queryset(self):
-#         queryset = Book.objects.all()
-#         published_date = self.request.query_params.get('published_date')
-
-class BookView(generics.ListAPIView):
+class BookView(generics.ListCreateAPIView): # ListAPIView
     model = Book
     serializer_class = BookSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('title', 'authors', 'published_date', 'categories', 'avaerage_rating', 'ratings_count',)
+    filter_fields = ('title', 'authors', 'publishedDate', 'categories', 'averageRating', 'ratingsCount',)
 
     
     def get_queryset(self):
@@ -53,9 +42,9 @@ class BookView(generics.ListAPIView):
         sort = self.request.query_params.get('sort')
         author = self.request.query_params.get('author')
         if published_date:
-            queryset = queryset.filter(published_date=published_date)
+            queryset = queryset.filter(publishedDate=published_date)
         elif author:
-            queryset = queryset.filter(author=author)
+            queryset = queryset.filter(authors=author)
         elif sort:
             queryset = queryset.order_by(sort)
         return queryset
@@ -81,9 +70,10 @@ class CreateUpdateBookView(APIView):
     def post(self, request, format=None):
         body = self.request.query_params.dict()
         try:
-            response = req.request(method='get', url='https://www.googleapis.com/books/v1/volumes', params=body)
-            response.raise_for_status()
-            data = response.json()
+            endpoint='https://www.googleapis.com/books/v1/volumes'
+            r = requests.get(endpoint, params=body)
+            r.raise_for_status()
+            data = r.json()
             print("Entire JSON response")
             print(data)
         except HTTPError as http_err:
