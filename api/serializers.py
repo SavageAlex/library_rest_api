@@ -60,7 +60,7 @@ class CreateUpdateBookFromApiBookSerializer(serializers.ModelSerializer):
     # authors = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all(), many=True)
     # categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
 
-    publishedDate = serializers.DateField(source='published_date', allow_null=True)
+    publishedDate = serializers.DateField(source='published_date', format="%Y", allow_null=True)
     averageRating = serializers.FloatField(source='average_rating', allow_null=True)
     ratingsCount = serializers.IntegerField(source='ratings_count', allow_null=True)
 
