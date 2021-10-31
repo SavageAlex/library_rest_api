@@ -30,23 +30,7 @@ class BookViewSet(viewsets.ModelViewSet):
         return queryset
 
 class CreateUpdateBookView(APIView):
-    # parser_class = JSONParser
-
-    # def fetch_books_endpoint(self, request):
-    #     body = self.request.query_params.dict()
-    #     try:
-    #         response = req.request(method='get', url='https://www.googleapis.com/books/v1/volumes', params=body)
-    #         response.raise_for_status()
-    #         jsonResponse = response.json()
-    #         print("Entire JSON response")
-    #         print(jsonResponse)
-    #     except HTTPError as http_err:
-    #         print(f'HTTP error occured: {http_err}')
-    #     except Exception as err:
-    #         print(f'Other error occured: {err}')
-    #     request=jsonResponse
-    #     return request
-
+    
     def post(self, request, format=None):
         body = self.request.query_params.dict()
         try:
@@ -113,7 +97,7 @@ class CreateUpdateBookView(APIView):
             i += 1
 
         serializer = CreateUpdateBookFromApiBookSerializer(data=book_list_of_dict, many=True)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=False):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

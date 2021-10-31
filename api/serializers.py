@@ -9,6 +9,11 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ['author_name',]
+        extra_kwargs = {
+            'authors': {
+                'validators': []
+            }
+        }
 
 class CategorySerializer(serializers.ModelSerializer):
 
@@ -18,6 +23,11 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['category_name',]
+        extra_kwargs = {
+            'categories': {
+                'validators': []
+            }
+        }
 
 class BookSerializer(serializers.ModelSerializer):
 
@@ -30,6 +40,20 @@ class BookSerializer(serializers.ModelSerializer):
         depth = 2
 
 class CreateUpdateBookFromApiBookSerializer(serializers.ModelSerializer):
+
+    # def validators(self, data):
+    #     print("validatae id")
+    #     return data
+
+    # def validate_authors(self, data):
+    #     print("validate authors")
+    #     return data
+
+    # def validate_categories(self, data):
+    #     print("validate categories")
+    #     return data
+
+
 
     authors = AuthorSerializer(many=True)
     categories = CategorySerializer(many=True)
@@ -44,6 +68,17 @@ class CreateUpdateBookFromApiBookSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['id', 'title', 'authors', 'publishedDate', 'categories', 'averageRating', 'ratingsCount', 'thumbnail'] # representation must be published_date, avaerage_rating, ratings_count
         depth = 2
+        extra_kwargs = {
+            'id': {
+                'validators': []
+            },
+            'authors': {
+                'validators': []
+            },
+            'categories': {
+                'validators': []
+            }
+        }
 
     def create(self, validated_data):
         print("Start creating")
