@@ -52,6 +52,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+REST_FRAMEWORK = {
+    "DATE_INPUT_FORMATS": ["%Y-%m-%d", "%Y-%m", "%Y"],
+}
+
 ROOT_URLCONF = 'stx_django_rest_api.urls'
 
 APPEND_SLASH = False

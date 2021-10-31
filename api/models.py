@@ -23,10 +23,10 @@ class Book(models.Model):
     id = models.CharField(primary_key=True, max_length=64)
     title = models.CharField(max_length=255)
     authors = models.ManyToManyField(Author, blank=True)
-    published_date = models.DateField() # must accepting a full date and yeat only formats
+    published_date = models.DateField(null=True, blank=True) # must accepting a full date and yeat only formats
     categories = models.ManyToManyField(Category, blank=True)
-    average_rating = models.FloatField(default=0)
-    ratings_count = models.IntegerField(default=0)
+    average_rating = models.FloatField(null=True, blank=True)
+    ratings_count = models.IntegerField(null=True, blank=True)
     thumbnail = models.URLField(null=True, blank=True)
 
     class Meta:
