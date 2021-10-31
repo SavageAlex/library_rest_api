@@ -1,11 +1,7 @@
-from django.http.response import JsonResponse
 import requests
-from requests.exceptions import HTTPError
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
-from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
 from django_filters.rest_framework import DjangoFilterBackend
 import io
 
@@ -39,15 +35,10 @@ class CreateUpdateBookView(APIView):
             r.raise_for_status()
             python_data = r.json()
             print(type(python_data))
-            # print("Entire JSON response")
-            # print(python_data)
         except HTTPError as http_err:
             print(f'HTTP error occured: {http_err}')
         except Exception as err:
             print(f'Other error occured: {err}')
-        # content = JSONRenderer().render(jsonResponse)
-        # stream = io.BytesIO(content)
-        # data = JSONParser().parse(stream)
         book_list = python_data['items']
         i = 1
         

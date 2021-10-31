@@ -57,7 +57,7 @@ REST_FRAMEWORK = {
     "DATE_INPUT_FORMATS": ["%Y-%m-%d", "%Y-%m", "%Y"],
 }
 
-DATE_INPUT_FORMATS = ['%d-%m-%Y']
+DATE_INPUT_FORMATS = ["%Y-%m-%d", "%Y-%m", "%Y"]
 
 ROOT_URLCONF = 'stx_django_rest_api.urls'
 

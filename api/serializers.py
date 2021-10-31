@@ -40,27 +40,10 @@ class BookSerializer(serializers.ModelSerializer):
         depth = 2
 
 class CreateUpdateBookFromApiBookSerializer(serializers.ModelSerializer):
-
-    # def validators(self, data):
-    #     print("validatae id")
-    #     return data
-
-    # def validate_authors(self, data):
-    #     print("validate authors")
-    #     return data
-
-    # def validate_categories(self, data):
-    #     print("validate categories")
-    #     return data
-
-
-
     authors = AuthorSerializer(many=True)
     categories = CategorySerializer(many=True)
-    # authors = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all(), many=True)
-    # categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
 
-    publishedDate = serializers.DateField(source='published_date', format="%Y", allow_null=True)
+    publishedDate = serializers.DateField(source='published_date', format="%Y", input_formats=["%Y-%m-%d", "%Y-%m", "%Y"], allow_null=True)
     averageRating = serializers.FloatField(source='average_rating', allow_null=True)
     ratingsCount = serializers.IntegerField(source='ratings_count', allow_null=True)
 
