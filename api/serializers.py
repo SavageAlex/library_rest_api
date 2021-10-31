@@ -90,21 +90,23 @@ class CreateUpdateBookFromApiBookSerializer(serializers.ModelSerializer):
             book = Book.objects.filter(id=book_id).first()
             if book is not None: # if book already exists
                 print("book already exists")
+                book = Book.objects.filter(id=book_id)
                 book.update(**validated_data) # update existing book
+                book = Book.objects.get(id=book_id)                   
 
                 for author_data in authors_data:
                     print("autor_data: ", author_data)
                     if author_data is not None:
-                        author = Author.objects.filter(author_name=author_data).first()
+                        author = Author.objects.filter(author_name=author_data.get('author_name')).first()
                         if author is None: # if author not exists
-                            print("creating new author: ", **author_data)
+                            print("creating new author: ", author_data)
                             author = Author.objects.create(book=book, **author_data) # creating new author
                         book.authors.add(author)
 
                 for category_data in categories_data:
                     print("category_data: ", category_data)
                     if category_data is not None:
-                        category = Category.objects.filter(category_name=category_data).first()
+                        category = Category.objects.filter(category_name=category_data.get('category_name')).first()
                         if category is None:
                             print("create new category: ", category_data)
                             category = Category.objects.create(book=book, **category_data)
@@ -117,7 +119,7 @@ class CreateUpdateBookFromApiBookSerializer(serializers.ModelSerializer):
                     print("autor_data: ", author_data)
                     if author_data is not None:
                         author = Author.objects.filter(author_name=author_data.get('author_name')).first()
-                        if author is None: # if author already exists
+                        if author is None: # if author not exists
                             print("creating new author: ", author_data)
                             author = Author.objects.create(book=book, **author_data) # creating new author
                         book.authors.add(author)
