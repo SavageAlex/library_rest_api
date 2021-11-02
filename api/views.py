@@ -23,19 +23,24 @@ class BookViewSet(viewsets.ModelViewSet):
         queryset = Book.objects.all()
         print(self.request.query_params)
         sort = self.request.query_params.get('sort')
-        author = self.request.query_params.get('author')
+        author_list = self.request.query_params.getlist('author')
         published_date = self.request.query_params.get('published_date')
         if sort:
             queryset = queryset.order_by(sort)
-        elif author:
-            author_obj = Author.objects.filter(author_name=author)
-            author_exists = author_obj.first()
-            if author_exists is not None:
-                author_id = author_obj.values('pk')
-                print(author_id)
-                queryset = queryset.filter(authors__in=author_id).distinct()
-                return queryset
-            return None            
+        elif author_list:
+            print(author_list)
+            author_id_list = []
+            for author in author_list:
+                author_obj = Author.objects.filter(author_name=author)
+                author_exists = author_obj.first()
+                if author_exists is not None:
+                    author_id_obj = author_obj.values('pk')
+                    author_id = author_id_obj[0]['pk']
+                    print(author_id)
+                    author_id_list.append(author_id)
+                    print(author_id_list)
+            queryset = queryset.filter(authors__in=author_id_list).distinct()
+            return queryset     
         elif published_date:
             print(published_date)
             queryset = queryset.filter(published_date__year=published_date).distinct()
