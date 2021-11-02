@@ -31,16 +31,17 @@ class BookViewSet(viewsets.ModelViewSet):
             print(author_list)
             author_id_list = []
             for author in author_list:
+                print(author)
                 author_obj = Author.objects.filter(author_name=author)
                 author_exists = author_obj.first()
+                print(author_exists)
                 if author_exists is not None:
                     author_id_obj = author_obj.values('pk')
                     author_id = author_id_obj[0]['pk']
                     print(author_id)
                     author_id_list.append(author_id)
                     print(author_id_list)
-            queryset = queryset.filter(authors__in=author_id_list).distinct()
-            return queryset     
+                queryset = queryset.filter(authors__in=author_id_list).distinct()
         elif published_date:
             print(published_date)
             queryset = queryset.filter(published_date__year=published_date).distinct()
