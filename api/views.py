@@ -2,27 +2,44 @@ import requests
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as filters
 import io
 
 from .serializers import BookSerializer, CreateUpdateBookFromApiBookSerializer
 from .models import Book, Author
 
+class BookFilter(filters.FilterSet):
+
+    class Meta:
+        model = b=Book
+        fields = ['title', 'authors', 'categories', 'average_rating', 'ratings_count',]
+
 class BookViewSet(viewsets.ModelViewSet):
     serializer_class = BookSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('title', 'authors', 'published_date', 'categories', 'average_rating', 'ratings_count',)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = BookFilter
     
     def get_queryset(self):
         queryset = Book.objects.all()
         print(self.request.query_params)
         sort = self.request.query_params.get('sort')
-        author = self.request.query_params.getlist('author')
-        print(author)
+        author = self.request.query_params.get('author')
+        published_date = self.request.query_params.get('published_date')
         if sort:
             queryset = queryset.order_by(sort)
         elif author:
-            queryset = queryset.filter(authors__in=author).distinct()
+            author_obj = Author.objects.filter(author_name=author)
+            author_exists = author_obj.first()
+            if author_exists is not None:
+                author_id = author_obj.values('pk')
+                print(author_id)
+                queryset = queryset.filter(authors__in=author_id).distinct()
+                return queryset
+            return None            
+        elif published_date:
+            print(published_date)
+            queryset = queryset.filter(published_date__year=published_date).distinct()
+
         return queryset
 
 class CreateUpdateBookView(APIView):
@@ -77,8 +94,8 @@ class CreateUpdateBookView(APIView):
                 book_dict['categories'] = category_lsit
             else:
                 book_dict['categories'] = []
-            make_book_dict(book_dict, 'averageRating', book['volumeInfo'].get('averageRating'))
-            make_book_dict(book_dict, 'ratingsCount', book['volumeInfo'].get('ratingsCount'))
+            book_dict['averageRating'] = book['volumeInfo'].get('averageRating', 0.0)
+            book_dict['ratingsCount'] = book['volumeInfo'].get('ratingsCount', 0)
             if book['volumeInfo'].get('imageLinks'):
                 make_book_dict(book_dict, 'thumbnail', book['volumeInfo']['imageLinks'].get('thumbnail'))
             else:

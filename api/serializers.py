@@ -9,11 +9,6 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ['author_name',]
-        extra_kwargs = {
-            'authors': {
-                'validators': []
-            }
-        }
 
 class CategorySerializer(serializers.ModelSerializer):
 
