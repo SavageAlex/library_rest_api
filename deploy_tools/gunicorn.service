@@ -1,0 +1,16 @@
+[Unit]
+Description=Gunicorn server for library.devproject.site
+
+[Service]
+Restart=on-failure
+User=ubuntu
+WorkingDirectory=/home/ubuntu/sites/library.devproject.site/source
+
+ExecStart=/home/ubuntu/sites/library.devproject.site/virtualenv/bin/gunicorn \
+    --bind unix:/tmp/library.devproject.site.socket \
+    --access-logfile ../access.log \
+    --error-logfile ../error.log \
+    stx_django_rest_api.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
