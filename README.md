@@ -1,8 +1,9 @@
 # stx_rest_api
-Test task to apply for Junior/Regular Python Developer at STXNext Company
+Book library Rest API that wrote on a Django Rest Framework.
+API fetches books from Google endpoint "https://www.googleapis.com/books/v1/volumes" and stores them in database.
+Application has next endpoints for fetching data from database:
 
-
-DOMAINNAME/api/db?q=Book Name # fetch books to database
+DOMAINNAME/api/db?q=BookName # fetches books to database
 
 DOMAINNAME/api/books # show book list stored in database
 
