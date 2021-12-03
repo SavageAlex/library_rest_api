@@ -6,7 +6,7 @@ import os
 ALLOWED_HOSTS += []
 DEBUG = True
 
-WSGI_APPLICATION = 'stx_django_rest_api.wsgi.application'
+WSGI_APPLICATION = 'book_library_rest_api.wsgi.application'
 
 DATABASES = {
     'default': {
